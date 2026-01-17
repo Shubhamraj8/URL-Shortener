@@ -1,24 +1,27 @@
 const express = require("express")
+const path = require("path")
 const {connectToMongoDB} = require('./connect')
 const app = express();
 const urlRoute = require("./routes/url");
+const staticRoute = require("./routes/staticRouter");
 const PORT = 4400;
 const URL = require ('./models/url');
 
-// app.get("/", (req, res) => {
-//   res.send("Server is running");
-// });
+app.set("view engine", "ejs");
+app.set("views", path.resolve("./views"));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 
 app.use("/url", urlRoute);
+app.use("/", staticRoute);
 
-app.get("/:shortId", async(req,res) => {
-    const shortId = req.params.id;
-    const entry = await URL.findOneAndUpdate({
-
-    }, { $push: {
-        visitHistory: {
+app.get("/url/:shortId", async(req,res) => {
+    const shortId = req.params.shortId;
+    const entry = await URL.findOneAndUpdate({ shortId },
+         { $push: {
+            visitHistory: {
             timestamp: Date.now()
         },
     }
