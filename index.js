@@ -35,7 +35,7 @@ app.get("/url/:shortId", async(req,res) => {
 
 
 app.use("/", staticRoute);
-app.use("/url", restrictTo("NORMAL"),  urlRoute);
+app.use("/url", restrictTo("NORMAL", "ADMIN"),  urlRoute);
 app.use("/user", userRoute)
 
 
